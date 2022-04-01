@@ -66,7 +66,7 @@ public class ActorController : MonoBehaviour
             anim.SetFloat("right", localDvec.x * ((pi.run) ? 2.0f : 1.0f));
         }
 
-        if (pi.roll || rigid.velocity.magnitude > 7.0f)
+        if (pi.roll || (rigid.velocity.magnitude > 7.0f && tag=="Player"))
         {
             anim.SetTrigger("roll");
         }
