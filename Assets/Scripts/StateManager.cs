@@ -22,6 +22,7 @@ public class StateManager : IActorManagerInterface
     public bool isDefense;
     public bool isCounterBack;//¶Ü·´¶¯»­×´Ì¬
     public bool isCounterBackEnable;//¶Ü·´¶¯»­µÄ¹Ø¼üÖ¡×´Ì¬
+    public bool isStunned;
 
     public bool isAllowDefense;
     public bool isImmortal;//ÎÞµÐ×´Ì¬
@@ -45,6 +46,7 @@ public class StateManager : IActorManagerInterface
         isDie = am.ac.CheckState("die");
         isBlocked = am.ac.CheckState("blocked");
         isCounterBack = am.ac.CheckState("counterBack");
+        isStunned = am.ac.CheckState("stunned");
         isCounterBackSucess = isCounterBackEnable;
         isCounterBackFailure = isCounterBack && !isCounterBackEnable;
 

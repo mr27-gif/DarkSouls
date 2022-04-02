@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System;
 public class CameraController : MonoBehaviour
 {
     public PlayerInput pi;
@@ -98,8 +98,18 @@ public class CameraController : MonoBehaviour
         //镜头锁定敌人脚底
         Vector3 modelOrigin1 = model.transform.position;//玩家的坐标，在脚底
         Vector3 modelOrigin2 = modelOrigin1 + new Vector3(0, 1, 0);//距离地面1m
-        Vector3 boxCenter = modelOrigin2 + model.transform.forward * 5.0f;
-        Collider[] cols = Physics.OverlapBox(boxCenter, new Vector3(0.5f, 0.5f, 5f), model.transform.rotation, LayerMask.GetMask(isAI?"Player":"Enemy"));
+
+        //ai的碰撞盒要大很多
+        Vector3 boxCenter = isAI? (modelOrigin2): (modelOrigin2 + model.transform.forward * 5.0f);
+
+        //优先做敌人的搜寻玩家碰撞盒
+        Collider[] cols = Physics.OverlapSphere(boxCenter, 10.0f, LayerMask.GetMask("Player"));
+        if(!isAI)//玩家
+        {
+            Array.Clear(cols, 0, cols.Length);
+            cols = Physics.OverlapBox(boxCenter, new Vector3(0.5f, 0.5f, 5f), model.transform.rotation, LayerMask.GetMask("Enemy"));
+        }
+
         if (cols.Length == 0)
         {
             LockProcessA(null, false, false, isAI);

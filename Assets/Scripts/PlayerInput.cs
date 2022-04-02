@@ -29,27 +29,27 @@ public class PlayerInput : MonoBehaviour
     public float Jup;
     public float Jright;
 
-    public bool run;
-    public bool defense;
-    public bool action;
-    public bool jump;
+    public bool run=false;
+    public bool defense=false;
+    public bool action=false;
+    public bool jump=false;
     //public bool attack;
-    public bool roll;
-    public bool lockon;
-    public bool lb;
-    public bool lt;
-    public bool rb;
-    public bool rt;
+    public bool roll=false;
+    public bool lockon=false;
+    public bool lb=false;
+    public bool lt=false;
+    public bool rb=false;
+    public bool rt=false;
 
 
     [Header("==== Others ====")]
 
     public bool inputEnabled = true;
 
-    private float targetDup;
-    private float targetDright;
-    private float velocityDup;
-    private float velocityDright;
+    public float targetDup;
+    public float targetDright;
+    public float velocityDup;
+    public float velocityDright;
 
     void Update()
     {
@@ -98,7 +98,7 @@ public class PlayerInput : MonoBehaviour
         lockon = Input.GetMouseButtonDown(2);
     }
 
-    private Vector2 SquareToCircle(Vector2 input)
+    public Vector2 SquareToCircle(Vector2 input)
     {
         Vector2 output = Vector2.zero;
         output.x = input.x * Mathf.Sqrt(1 - (input.y * input.y) / 2.0f);

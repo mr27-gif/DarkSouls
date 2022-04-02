@@ -42,7 +42,7 @@ public class ActorManager : MonoBehaviour
             if (im.overlapEvastms[0].active == true&&!dm.IsPlaying())
             {
 
-                if (im.overlapEvastms[0].eventName == "frontStab")
+                if (im.overlapEvastms[0].eventName == "frontStab")//&& im.overlapEvastms[0].am.sm.isStunned)
                 {
                     dm.PlayFrontStab("frontStab", this, im.overlapEvastms[0].am);
                 }
@@ -57,6 +57,12 @@ public class ActorManager : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if(ac.IsAI)
+        {
+            print("准备执行 dm.playt");
+            dm.PlayFrontStab("frontStab", this,this.GetComponent<DummyIUerInput>().playerAM);
         }
     }
 
@@ -84,6 +90,10 @@ public class ActorManager : MonoBehaviour
     }
     public void TryDoDamge(WeaponController targetWc, bool attackValid, bool counterValid)
     {
+        if(sm.isImmortal)
+        {
+            return;
+        }
         if (sm.isCounterBackSucess)
         {
             if (counterValid)
@@ -101,6 +111,7 @@ public class ActorManager : MonoBehaviour
         else if (sm.isDefense)//持盾
         {
             Blocked();
+            targetWc.wm.am.tanDao();
         }
         else//受伤
         {
@@ -157,10 +168,10 @@ public class ActorManager : MonoBehaviour
         }
         ac.camcon.enabled = false;//关掉cc代码
     }
-
-    public void TestEcho()
+    
+    public void tanDao()
     {
-        print("echo");
+        ac.IssueTrigger("tanDao");
     }
 
     public void LockActorController(bool value)

@@ -30,6 +30,7 @@ public class ActorController : MonoBehaviour
     private Vector3 deltaPos;
 
     public bool leftIsShield = false;
+    public bool IsAI = false;
 
     public delegate void OnActionDelegate();
     public event OnActionDelegate OnAction;
@@ -62,7 +63,7 @@ public class ActorController : MonoBehaviour
         else
         {
             Vector3 localDvec = transform.InverseTransformVector(pi.Dvec);//世界转本地
-            anim.SetFloat("forward", localDvec.z * ((pi.run) ? 2.0f : 1.0f));
+            anim.SetFloat("forward", Mathf.Lerp(anim.GetFloat("forward"), localDvec.z * ((pi.run) ? 2.0f : 1.0f),0.5f));
             anim.SetFloat("right", localDvec.x * ((pi.run) ? 2.0f : 1.0f));
         }
 
@@ -163,7 +164,7 @@ public class ActorController : MonoBehaviour
 
         if (pi.action)
         {
-            OnAction.Invoke();
+            dunFan();
         }
     }
 
@@ -173,6 +174,10 @@ public class ActorController : MonoBehaviour
         rigid.velocity = new Vector3(planarVec.x, rigid.velocity.y, planarVec.z) + thrustVec;
         thrustVec = Vector3.zero;
         deltaPos = Vector3.zero;
+    }
+    public void dunFan()
+    {
+        OnAction.Invoke();
     }
 
     public bool CheckState(string stateName, string layerName = "Base Layer")
@@ -217,6 +222,7 @@ public class ActorController : MonoBehaviour
         lockPlanar = false;
         col.material = frictionOne;
         trackDirection = false;
+       
     }
 
     public void OnGroundExit()
@@ -253,6 +259,12 @@ public class ActorController : MonoBehaviour
     {
         pi.inputEnabled = false;
         //lerpTarget = 1.0f;
+        //print("OnAttack1hAEnter"+camcon.lockState);
+        if (IsAI&&camcon.lockState==true)
+        {
+            print("on attack1h enter");
+            camcon.LockUnlock();
+        }
     }
 
     public void OnAttack1hAUpdate()
@@ -266,8 +278,26 @@ public class ActorController : MonoBehaviour
 
     public void OnAttackExit()
     {
-        //print("exit");
         model.SendMessage("WeaponDisable");
+
+        //print("OnAttackExit"+camcon.lockState);
+        if(camcon.lockState==false&&IsAI)
+        {
+        StartCoroutine(UnlockPlayer());
+        }
+
+    }
+
+    IEnumerator UnlockPlayer()
+    {
+        //print("开始携程");
+        yield return new WaitForSeconds(0.5f);
+        //ai重新锁定目标
+        if (IsAI && pi.rb == false)
+        {
+            //print("真的开始");
+            camcon.LockUnlock();
+        }
     }
 
     public void OnHitEnter()

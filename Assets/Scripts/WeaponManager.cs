@@ -112,6 +112,7 @@ public class WeaponManager : IActorManagerInterface
 
     public void CounterBackEnter()
     {
+        print("Counterback enter");
         am.SetIsCounterBack(true);
 
     }
