@@ -11,6 +11,7 @@ public class DataBase
     public DataBase()
     {
         TextAsset weaponContent = Resources.Load(weaponDatabaseFileName) as TextAsset;
+        Debug.Log(weaponContent);
         wepondataBase = new JSONObject(weaponContent.text);
         //print(abc["Falchion"]["DEF"].floatValue);
     }

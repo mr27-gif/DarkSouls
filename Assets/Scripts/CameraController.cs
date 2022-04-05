@@ -103,7 +103,7 @@ public class CameraController : MonoBehaviour
         Vector3 boxCenter = isAI? (modelOrigin2): (modelOrigin2 + model.transform.forward * 5.0f);
 
         //优先做敌人的搜寻玩家碰撞盒
-        Collider[] cols = Physics.OverlapSphere(boxCenter, 10.0f, LayerMask.GetMask("Player"));
+        Collider[] cols = Physics.OverlapSphere(boxCenter, 12.0f, LayerMask.GetMask("Player"));
         if(!isAI)//玩家
         {
             Array.Clear(cols, 0, cols.Length);

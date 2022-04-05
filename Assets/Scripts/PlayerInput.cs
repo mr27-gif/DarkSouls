@@ -40,6 +40,7 @@ public class PlayerInput : MonoBehaviour
     public bool lt=false;
     public bool rb=false;
     public bool rt=false;
+    public bool jumpattack = false;
 
 
     [Header("==== Others ====")]
@@ -90,12 +91,16 @@ public class PlayerInput : MonoBehaviour
         roll = buttonJump.OnReleased && buttonJump.IsDelaying;
         action = buttonC.OnPressed;
 
-        rt = buttonRAttack.OnPressed;
         lt = buttonLAttack.OnPressed;
         rb = Input.GetMouseButtonDown(0);
+        rt = buttonRAttack.OnPressed;
         lb = Input.GetMouseButtonDown(1);
+
+        jumpattack= buttonJump.IsPressing&& Input.GetMouseButtonDown(0);
+
         defense = Input.GetMouseButton(1);
         lockon = Input.GetMouseButtonDown(2);
+
     }
 
     public Vector2 SquareToCircle(Vector2 input)

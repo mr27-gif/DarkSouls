@@ -11,6 +11,7 @@ public class ActorController : MonoBehaviour
     public float runMultiplier = 2.0f;
     public float jumpVelocity = 5.0f;
     public float rollVelocity = 1.0f;
+    public float JumpAttackDevc = 5.0f;
     //public float jabMultiplier = 3.0f;
 
     [Header("=========Friction Setting==========")]
@@ -20,7 +21,7 @@ public class ActorController : MonoBehaviour
     public Animator anim;
     private Rigidbody rigid;
     private Vector3 planarVec;//移动距离
-    private Vector3 thrustVec;
+    public Vector3 thrustVec;
     private Vector3 targetForward;//跳跃的垂直冲量
     private bool canAttack;
     private bool lockPlanar = false;
@@ -49,122 +50,130 @@ public class ActorController : MonoBehaviour
     void Update()
     {
         //anim.SetBool("defense",pi.defense);
-
-        if (pi.lockon)
+        if (gameObject.layer == LayerMask.NameToLayer("Player") || gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            camcon.LockUnlock();
-        }
-
-        if (camcon.lockState == false)
-        {
-            anim.SetFloat("forward", pi.Dmag * Mathf.Lerp(anim.GetFloat("forward"), (pi.run ? 2.0f : 1.0f), 0.5f));//行为树赋值
-            anim.SetFloat("right", 0);
-        }
-        else
-        {
-            Vector3 localDvec = transform.InverseTransformVector(pi.Dvec);//世界转本地
-            anim.SetFloat("forward", Mathf.Lerp(anim.GetFloat("forward"), localDvec.z * ((pi.run) ? 2.0f : 1.0f),0.5f));
-            anim.SetFloat("right", localDvec.x * ((pi.run) ? 2.0f : 1.0f));
-        }
-
-        if (pi.roll || (rigid.velocity.magnitude > 7.0f && tag=="Player"))
-        {
-            anim.SetTrigger("roll");
-        }
-
-        if (pi.jump)
-        {
-            anim.SetTrigger("jump");
-        }
-        else if ((pi.rb || pi.lb) && (CheckState("ground") || CheckStateTag("attackL") || CheckStateTag("attackR")) && canAttack)
-        {
-            if (pi.rb)
+            if (pi.lockon)
             {
-                anim.SetBool("R0L1", false);
-                anim.SetTrigger("attack");
-            }
-            else if (pi.lb && !leftIsShield)
-            {
-                anim.SetBool("R0L1", true);
-                anim.SetTrigger("attack");
+                camcon.LockUnlock();
             }
 
-        }
-
-        if ((pi.rt || pi.lt) && (CheckState("ground") || CheckStateTag("attackL") || CheckStateTag("attackR")) && canAttack)
-        {
-            if (pi.rt)
+            if (camcon.lockState == false)
             {
-                //做右手重击
+                anim.SetFloat("forward", pi.Dmag * Mathf.Lerp(anim.GetFloat("forward"), (pi.run ? 2.0f : 1.0f), 0.5f));//行为树赋值
+                anim.SetFloat("right", 0);
             }
             else
             {
-                if (!leftIsShield)
+                Vector3 localDvec = transform.InverseTransformVector(pi.Dvec);//世界转本地
+                anim.SetFloat("forward", Mathf.Lerp(anim.GetFloat("forward"), localDvec.z * ((pi.run) ? 2.0f : 1.0f), 0.5f));
+                anim.SetFloat("right", localDvec.x * ((pi.run) ? 2.0f : 1.0f));
+            }
+
+            if (pi.roll || (rigid.velocity.magnitude > 7.0f && tag == "Player"))
+            {
+                anim.SetTrigger("roll");
+            }
+
+            if (pi.jumpattack)
+            {
+                anim.SetTrigger("jumpAttack");
+            }
+
+            if (pi.jump)
+            {
+                anim.SetTrigger("jump");
+            }
+            else if ((pi.rb || pi.lb) && (CheckState("ground") || CheckStateTag("attackL") || CheckStateTag("attackR")) && canAttack)
+            {
+                if (pi.rb)
                 {
-                    //左手重击
+                    anim.SetBool("R0L1", false);
+                    anim.SetTrigger("attack");
+                }
+                else if (pi.lb && !leftIsShield)
+                {
+                    anim.SetBool("R0L1", true);
+                    anim.SetTrigger("attack");
+                }
+
+            }
+
+
+            if ((pi.rt || pi.lt) && (CheckState("ground") || CheckStateTag("attackL") || CheckStateTag("attackR")) && canAttack)
+            {
+                if (pi.rt)
+                {
+                    anim.SetTrigger("heavyAttack");
                 }
                 else
                 {
-                    //盾反
-                    anim.SetTrigger("counterBack");
+                    if (!leftIsShield)
+                    {
+                        //左手重击
+                    }
+                    else
+                    {
+                        //盾反
+                        anim.SetTrigger("counterBack");
+                    }
                 }
             }
-        }
 
-        if (leftIsShield)//持盾时
-        {
-            if (CheckState("ground") || CheckState("blocked"))//在地面和受击状态时，都可以持盾
+            if (leftIsShield)//持盾时
             {
-                anim.SetLayerWeight(anim.GetLayerIndex("defense"), 1);
-                anim.SetBool("defense", pi.defense);
-            }
-            else
-            {
-                anim.SetLayerWeight(anim.GetLayerIndex("defense"), 0);//关闭defense Layer的权重
-                anim.SetBool("defense", false);
-            }
-        }
-        else
-        {
-            anim.SetLayerWeight(anim.GetLayerIndex("defense"), 0);
-        }
-
-        if (camcon.lockState == false)//未锁定目标
-        {
-            if (pi.inputEnabled == true)
-            {
-                if (pi.Dmag > 0.1f)//防止不操控角色时人物方向归位
+                if (CheckState("ground") || CheckState("blocked"))//在地面和受击状态时，都可以持盾
                 {
-                    targetForward = Vector3.Slerp(model.transform.forward, pi.Dvec, 0.3f);//转向过渡
-                    model.transform.forward = targetForward;
+                    anim.SetLayerWeight(anim.GetLayerIndex("defense"), 1);
+                    anim.SetBool("defense", pi.defense);
                 }
-
-            }
-            if (lockPlanar == false)
-            {
-                planarVec = pi.Dmag * model.transform.forward * walkSpeed * ((pi.run) ? runMultiplier : 1.0f);
-            }
-        }
-        else
-        {
-            if (trackDirection == false)
-            {
-                model.transform.forward = transform.forward;
+                else
+                {
+                    anim.SetLayerWeight(anim.GetLayerIndex("defense"), 0);//关闭defense Layer的权重
+                    anim.SetBool("defense", false);
+                }
             }
             else
             {
-                model.transform.forward = planarVec.normalized;
+                anim.SetLayerWeight(anim.GetLayerIndex("defense"), 0);
             }
 
-            if (lockPlanar == false)
+            if (camcon.lockState == false)//未锁定目标
             {
-                planarVec = pi.Dvec * walkSpeed * ((pi.run) ? runMultiplier : 1.0f);
-            }
-        }
+                if (pi.inputEnabled == true)
+                {
+                    if (pi.Dmag > 0.1f)//防止不操控角色时人物方向归位
+                    {
+                        targetForward = Vector3.Slerp(model.transform.forward, pi.Dvec, 0.3f);//转向过渡
+                        model.transform.forward = targetForward;
+                    }
 
-        if (pi.action)
-        {
-            dunFan();
+                }
+                if (lockPlanar == false)
+                {
+                    planarVec = pi.Dmag * model.transform.forward * walkSpeed * ((pi.run) ? runMultiplier : 1.0f);
+                }
+            }
+            else
+            {
+                if (trackDirection == false)
+                {
+                    model.transform.forward = transform.forward;
+                }
+                else
+                {
+                    model.transform.forward = planarVec.normalized;
+                }
+
+                if (lockPlanar == false)
+                {
+                    planarVec = pi.Dvec * walkSpeed * ((pi.run) ? runMultiplier : 1.0f);
+                }
+            }
+
+            if (pi.action)
+            {
+                dunFan();
+            }
         }
     }
 
@@ -267,6 +276,19 @@ public class ActorController : MonoBehaviour
         }
     }
 
+    public void OnheavyAttackEnter()
+    {
+        pi.inputEnabled = false;
+    }
+
+    public void OnJumpAttackEnter()
+    {
+        pi.inputEnabled = false;
+        trackDirection = true;
+        planarVec = planarVec/10;
+        lockPlanar = true;
+    }
+
     public void OnAttack1hAUpdate()
     {
         thrustVec = model.transform.forward * anim.GetFloat("attack1hAVelocity");//攻击往前冲量
@@ -274,6 +296,16 @@ public class ActorController : MonoBehaviour
         //float currentWeight = anim.GetLayerWeight(anim.GetLayerIndex("attack"));
         //currentWeight = Mathf.Lerp(currentWeight, lerpTarget,0.1f);
         //anim.SetLayerWeight(anim.GetLayerIndex("attack"), currentWeight);
+    }
+
+    public void OnheavyAttackUpdate()
+    {
+        thrustVec = model.transform.forward * anim.GetFloat("attack1hAVelocity");//攻击往前冲量
+    }
+
+    public void OnJumpAttackUpdate()
+    {
+        thrustVec += model.transform.forward * anim.GetFloat("attack1hAVelocity");
     }
 
     public void OnAttackExit()
@@ -285,7 +317,9 @@ public class ActorController : MonoBehaviour
         {
         StartCoroutine(UnlockPlayer());
         }
-
+        trackDirection = false;
+        pi.inputEnabled = true;
+        lockPlanar = false;
     }
 
     IEnumerator UnlockPlayer()

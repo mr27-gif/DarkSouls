@@ -29,7 +29,7 @@ public class DummyIUerInput : PlayerInput
         action = false;
         jump = false;
         roll = false;
-
+        rb = false;
         distance = Vector3.Distance(transform.position, playerAM.transform.position);
         mytimer -= Time.deltaTime;
         attackTimer -= Time.deltaTime;
@@ -41,7 +41,7 @@ public class DummyIUerInput : PlayerInput
         }
 
         //距离
-        if (distance >= 5 && distance <= 8)
+        if (distance >= 8 && distance <= 12)
         {
             if (am.ac.camcon.lockState == false)
             {
@@ -51,7 +51,7 @@ public class DummyIUerInput : PlayerInput
             run = true;
             targetDup = 1.0f;
         }
-        else if (distance >= 1.8 && distance < 5)
+        else if (distance >= 1.8 && distance < 8)
         {
             run = false;
             targetDup = 1.0f;
@@ -61,10 +61,9 @@ public class DummyIUerInput : PlayerInput
             targetDup = 0;
             if (mytimer < 0)
             {
-                
+
                 defense = false;
                 int randnumber = (int)(Time.time * 10.0f % 9);
-                Debug.Log(randnumber);
                 switch (randnumber)
                 {
                     case 1:
@@ -80,16 +79,16 @@ public class DummyIUerInput : PlayerInput
                         mytimer = 2.0f;
                         break;
                 }
-                if(randnumber>3)
+                if (randnumber > 3)
                 {
                     rb = true;
                     mytimer = 2.0f;
-                }               
+                }
             }
         }
 
         //相隔1s判断一次
-        if(attackTimer<0)
+        if (attackTimer < 0)
         {
             //ai被打
             if (playerAM.sm.isAttack == true)

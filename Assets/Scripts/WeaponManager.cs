@@ -112,7 +112,6 @@ public class WeaponManager : IActorManagerInterface
 
     public void CounterBackEnter()
     {
-        print("Counterback enter");
         am.SetIsCounterBack(true);
 
     }
@@ -120,5 +119,11 @@ public class WeaponManager : IActorManagerInterface
     public void CounterBackDisable()
     {
         am.SetIsCounterBack(false);
+    }
+
+    //ÌøÕ¶¶¯»­ÊÂ¼þ
+    public void AddJumpAttackDevc()
+    {
+        am.ac.thrustVec += new Vector3(0, 4.5f, 0);
     }
 }

@@ -53,7 +53,7 @@ public class ActorManager : MonoBehaviour
                         transform.position = im.overlapEvastms[0].am.transform.position + im.overlapEvastms[0].am.transform.TransformVector(im.overlapEvastms[0].offset);//设置人物在宝箱正前方
                         ac.model.transform.LookAt(im.overlapEvastms[0].am.transform, Vector3.up); //人物朝向
                         dm.PlayFrontStab("openBox", this, im.overlapEvastms[0].am);
-                        //im.overlapEvastms[0].active = false;
+                        im.overlapEvastms[0].active = false;
                     }
                 }
             }
@@ -131,6 +131,10 @@ public class ActorManager : MonoBehaviour
         else
         {
             sm.AddHp(-1*targetWc.GetATK());
+            if(sm.isHeavyAttack||sm.isJumpAttack)
+            {
+                sm.AddHp(-0.5f * targetWc.GetATK());
+            }
             if (sm.HP > 0)
             {
                 if (doHitAnimation)
