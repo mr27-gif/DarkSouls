@@ -37,7 +37,6 @@ public class WeaponFactory
         {
             return null;
         }
-
         GameObject prefab = Resources.Load(weaponName) as GameObject;
         GameObject obj= GameObject.Instantiate(prefab);
 

@@ -16,28 +16,20 @@ public class WeaponManager : IActorManagerInterface
 
     private void Start()
     {
-        try
+
+        if (am.gameObject.name != "TreasureBoxHandle")
         {
             whL = transform.DeepFind("weaponHandleL").gameObject;
+            print("whl=========================" + whL);
             wcL = BindWeaponController(whL);
             weaponColL = whL.GetComponentInChildren<Collider>();
             weaponColL.enabled = false;
-        }
-        catch (System.Exception ex) 
-        {
-            //没有“weaponHandleL”物体
-        }
 
-        try
-        {
             whR = transform.DeepFind("weaponHandleR").gameObject;
+            print("whR=========================" + whR);
             wcR = BindWeaponController(whR);
             weaponColR = whR.GetComponentInChildren<Collider>();
             weaponColR.enabled = false;
-        }
-        catch (System.Exception ex) 
-        {
-            //没有“weaponHandleR”物体
         }
     }
 

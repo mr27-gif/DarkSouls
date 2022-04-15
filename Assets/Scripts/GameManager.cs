@@ -10,12 +10,20 @@ public class GameManager : MonoBehaviour
     private DataBase weaponDB;
     private WeaponFactory weaponFact;
 
+    public ActorManager playerAM;
     public WeaponManager testwm;
+    public UIGameManager uigm;
+
+    public bool isGameOver;
+
     void Awake()
     {
+        isGameOver = false;
         CheckGameObject();
         CheckSingle();
-       
+        uigm = GetComponent<UIGameManager>();
+        testwm=GameObject.Find("PlayerHandle").GetComponent<ActorManager>().wm;
+        Time.timeScale = 0;
     }
 
     void Start()
@@ -23,45 +31,45 @@ public class GameManager : MonoBehaviour
         InitWeaponDB();
         IninWeaponFactory();
 
-        Collider col= weaponFact.CreateWeapon("Mace","R", testwm);
-        testwm.UpdateCollider("R", col);
+        GameInit();
+        addWeapon("R", "mace", false);
     }
 
-    void OnGUI()
+    void Update()
     {
-        if(GUI.Button(new Rect(10, 10, 150, 30), "R:Sword"))
+        if(isGameOver)
         {
-            testwm.UnloadWeapon("R");
-            Collider col = weaponFact.CreateWeapon("Sword", "R", testwm);
-            testwm.UpdateCollider("R", col);
-            testwm.ChangeDualHands(false);
+            isGameOver = false;
+            if (playerAM.sm.HP>0)
+            {
+                //you win
+                uigm.endGameLoadPanel();
+            }
+            else
+            {
+                
+            }
         }
-         if (GUI.Button(new Rect(10, 50, 150, 30), "R:Falchion"))
-        {
-            testwm.UnloadWeapon("R");
-            Collider col = weaponFact.CreateWeapon("Falchion", "R", testwm);
-            testwm.UpdateCollider("R", col);
-            testwm.ChangeDualHands(true);
-        }
-         if(GUI.Button(new Rect(10, 90, 150, 30), "R:Mace"))
-        {
-            testwm.UnloadWeapon("R");
-            Collider col = weaponFact.CreateWeapon("Mace", "R", testwm);
-            testwm.UpdateCollider("R", col);
-            testwm.ChangeDualHands(false);
-        }
-         if (GUI.Button(new Rect(10, 130, 150, 30), "R:Clear all weapons"))
-        {
-            
-        }
+    }
 
+    public void GameInit()
+    {
+        BagItemManager.InitBagAndActor();//初始化背包和人物装备
+        BagDisplayUI.updateActorItemToUI();
+        BagDisplayUI.updateItemToUI();
+    }
+
+    public void addWeapon(string hand,string weaponName,bool DualHand)//DualHand为true时双手持武器
+    {
+        testwm.UnloadWeapon(hand);
+        Collider col = weaponFact.CreateWeapon(weaponName, hand, testwm);
+        testwm.UpdateCollider(hand, col);
+        testwm.ChangeDualHands(DualHand);
     }
 
     /// <summary>
     /// /
     /// </summary>
-
-
 
     private void IninWeaponFactory()
     {
@@ -87,9 +95,11 @@ public class GameManager : MonoBehaviour
         if(instance==null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);//防止切换环境消失掉
+            //DontDestroyOnLoad(gameObject);//防止切换环境消失掉
             return;
         }
         Destroy(this);
     }
+
+
 }

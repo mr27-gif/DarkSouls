@@ -7,6 +7,7 @@ public class ActorController : MonoBehaviour
     public GameObject model;
     public PlayerInput pi;
     public CameraController camcon;
+    public ActorManager am;
     public float walkSpeed = 2.0f;
     public float runMultiplier = 2.0f;
     public float jumpVelocity = 5.0f;
@@ -30,7 +31,7 @@ public class ActorController : MonoBehaviour
     //private float lerpTarget;
     private Vector3 deltaPos;
 
-    public bool leftIsShield = false;
+    public bool leftIsShield = true;
     public bool IsAI = false;
 
     public delegate void OnActionDelegate();
@@ -41,6 +42,8 @@ public class ActorController : MonoBehaviour
         anim = model.GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
+        am = GetComponent<ActorManager>();
+
     }
     void Start()
     {
@@ -52,6 +55,12 @@ public class ActorController : MonoBehaviour
         //anim.SetBool("defense",pi.defense);
         if (gameObject.layer == LayerMask.NameToLayer("Player") || gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
+            if(pi.switchDualHand)
+            {
+                am.IsTwoHand = !am.IsTwoHand;
+                am.ChangeDualHands(am.IsTwoHand);
+            }
+
             if (pi.lockon)
             {
                 camcon.LockUnlock();

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7413967662337400839}
   - component: {fileID: 1211469094828629059}
   m_Layer: 7
-  m_Name: Falchion
+  m_Name: falchion
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1876784794504296603}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   m_Radius: 0.14062946
   m_Height: 1.523553
   m_Direction: 1

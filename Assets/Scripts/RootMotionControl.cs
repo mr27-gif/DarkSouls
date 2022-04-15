@@ -13,5 +13,6 @@ public class RootMotionControl : MonoBehaviour
     {   
         //此函数与fixedUpdate不同步
         SendMessageUpwards("OnUpdateRM",anim.deltaPosition );//装箱
+        Debug.Log(anim.deltaPosition);
     }
 }

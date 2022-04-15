@@ -41,10 +41,11 @@ public class ActorManager : MonoBehaviour
         {
             if (im.overlapEvastms[0].active == true&&!dm.IsPlaying())
             {
-
-                if (im.overlapEvastms[0].eventName == "frontStab")//&& im.overlapEvastms[0].am.sm.isStunned)
+                if (im.overlapEvastms[0].eventName == "frontStab"&& im.overlapEvastms[0].am.sm.isStunned)
                 {
                     dm.PlayFrontStab("frontStab", this, im.overlapEvastms[0].am);
+                    im.overlapEvastms[0].am.sm.AddHp(-1 * wm.wcR.GetATK());//先扣一次血
+                    im.overlapEvastms[0].am.HitOrDie(wm.wcR, false);//再扣一次血
                 }
                 else if (im.overlapEvastms[0].eventName == "openBox")
                 {
@@ -145,7 +146,9 @@ public class ActorManager : MonoBehaviour
             }
             else
             {
+                sm.IsDisplayHp = false;
                 Die();
+                sm.HPImageBG.gameObject.transform.position = new Vector3(9999, 9999, 9999);
             }
         }
     }
@@ -171,6 +174,10 @@ public class ActorManager : MonoBehaviour
             ac.camcon.LockUnlock();
         }
         ac.camcon.enabled = false;//关掉cc代码
+        if (gameObject.name == "PlayerHandle"||gameObject.name== "BossHandle")
+        {
+            GameObject.Find("GM").GetComponent<GameManager>().isGameOver = true;
+        }
     }
     
     public void tanDao()
@@ -183,10 +190,12 @@ public class ActorManager : MonoBehaviour
         ac.SetBool("lock", value);
     }
 
+    public bool IsTwoHand=false;
     public void ChangeDualHands(bool dualOn)//切换双手
     {
+        IsTwoHand = dualOn;
         //print("change" + dualOn);
-        if(dualOn)
+        if (dualOn)
         {
             ac.anim.runtimeAnimatorController = twoHandAnim;
         }
@@ -194,7 +203,8 @@ public class ActorManager : MonoBehaviour
         {
             ac.anim.runtimeAnimatorController = oneHandAnim;
         }
-        
+
+        wm.whL.gameObject.SetActive(!dualOn);
     
     }
 }

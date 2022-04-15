@@ -42,6 +42,8 @@ public class PlayerInput : MonoBehaviour
     public bool rt=false;
     public bool jumpattack = false;
 
+    public bool switchDualHand=false;
+
 
     [Header("==== Others ====")]
 
@@ -100,6 +102,8 @@ public class PlayerInput : MonoBehaviour
 
         defense = Input.GetMouseButton(1);
         lockon = Input.GetMouseButtonDown(2);
+
+        switchDualHand = Input.GetKeyDown(KeyCode.Tab);
 
     }
 

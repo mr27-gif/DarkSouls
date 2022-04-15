@@ -205,7 +205,7 @@ GameObject:
   - component: {fileID: 2172739614013893242}
   - component: {fileID: 3639035774373856760}
   m_Layer: 7
-  m_Name: Sword
+  m_Name: sword
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -235,7 +235,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 4806568378410706149}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   m_Radius: 0.07
   m_Height: 1
   m_Direction: 1

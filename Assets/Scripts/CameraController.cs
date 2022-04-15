@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     private GameObject playerHandle;
     private GameObject cameraHandle;
     private GameObject model;
-    private new Camera camera;
+    public new Camera camera;
 
     private LockTarget lockTarget;
 
@@ -30,7 +30,6 @@ public class CameraController : MonoBehaviour
         {
             camera = Camera.main;
             lockDot.enabled = false;
-            //Cursor.lockState = CursorLockMode.Locked;//取消鼠标显示，锁在中心点
         }
         lockState = false;
     }
@@ -125,6 +124,10 @@ public class CameraController : MonoBehaviour
                 }
                 //lockTarget = new LockTarget(col.gameObject, col.bounds.extents.y);
                 LockProcessA(new LockTarget(col.gameObject, col.bounds.extents.y), true, true, isAI);
+                if(!isAI)//假如是玩家的cameramController,则显示锁定目标的血量
+                {
+                    lockTarget.am.sm.IsDisplayHp = true;
+                }
                 break;
             }
         }
